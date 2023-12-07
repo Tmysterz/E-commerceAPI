@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   try {
-    const productData = await Driver.findByPk(req.params.id, {
+    const productData = await Product.findByPk(req.params.id, {
       // ************** TODO: What models do i include for this **************  
       include: [ { model: Category } ],
     });
@@ -141,7 +141,6 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-
 });
 
 module.exports = router;
