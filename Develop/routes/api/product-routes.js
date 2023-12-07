@@ -3,10 +3,10 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
 
-// TODO: TEST ALL ROUTES
-// TODO: ASK ABOUT include: [{}]
+// TODO: when ever i do search all products the tags field is empty. see hw readme to see what it is suppused to look like
+// TODO: HELP WITH UPDATE ROUTE
 
-// NEED TO TEST
+// COMPLETED
 
 // get all products
 router.get('/', async (req, res) => {
@@ -14,8 +14,7 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Category and Tag data
   try {
     const productData = await Product.findAll({
-      // ************** TODO: What models do i include for this **************  
-      include: [{ model: Category } ],
+      include: [ { model: Category }, { model: Tag }],
     });
     res.status(200).json(productData);
   } catch (err) {
@@ -23,16 +22,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// NEED TO TEST
+// COMPLETED
 
 // get one product
 router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   try {
-    const productData = await Product.findByPk(req.params.id, {
-      // ************** TODO: What models do i include for this **************  
-      include: [ { model: Category } ],
+    const productData = await Product.findByPk(req.params.id, { 
+      include: [ { model: Category }, { model: Tag} ],
     });
 
     if (!productData) {
@@ -46,10 +44,10 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// NEED TO TEST
+// COMPLETED
 
 // create new product
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -58,26 +56,12 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  Product.create(req.body)
-    .then((product) => {
-      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
-        const productTagIdArr = req.body.tagIds.map((tag_id) => {
-          return {
-            product_id: product.id,
-            tag_id,
-          };
-        });
-        return ProductTag.bulkCreate(productTagIdArr);
-      }
-      // if no product tags, just respond
-      res.status(200).json(product);
-    })
-    .then((productTagIds) => res.status(200).json(productTagIds))
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+  try {
+    const productData = await Product.create(req.body);
+    res.status(200).json(productData);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
 // NEED TO TEST
@@ -127,7 +111,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// NEED TO TEST
+// COMPLETED
 
 router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value

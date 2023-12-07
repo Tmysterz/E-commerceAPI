@@ -3,11 +3,13 @@ const { Tag, Product, ProductTag } = require('../../models');
 
 // The `/api/tags` endpoint
 
-// TODO: TEST ALL ROUTES
-// TODO: ASK ABOUT include: [{}]
-// TODO: need help with .post and .put 
 
-// NEED TO TEST
+// TODO: ASK ABOUT include: [{}]
+// TODO: when ever i do search all tags the products field is empty. see hw readme to see what it is suppused to look like
+// TODO: HELP WITH UPDATE ROUTE
+
+
+// COMPLETED
 
 router.get('/', async (req, res) => {
   // find all tags
@@ -16,7 +18,7 @@ router.get('/', async (req, res) => {
   try {
     const tagData = await Tag.findAll({
       // ************** TODO: What models do i include for this **************  
-      include: [{ model: Product } ],
+      include: [ {model: Product} ],
     });
     res.status(200).json(tagData);
   } catch (err) {
@@ -24,7 +26,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// NEED TO TEST
+// COMPLETED
 
 router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
@@ -33,7 +35,7 @@ router.get('/:id', async (req, res) => {
   try {
     const tagData = await Tag.findByPk(req.params.id, {
       // ************** TODO: What models do i include for this **************  
-      include: [ { model: ProductTag } ],
+      include: [ { model: Product } ],
     });
 
     if (!tagData) {
@@ -47,13 +49,16 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// need help with post and put
-// how do i create the route using async and await
-// NEED TO TEST
+// COMPLETED
 
 router.post('/', async (req, res) => {
   // create a new tag
-  
+  try {
+    const tagData = await Tag.create(req.body);
+    res.status(200).json(tagData);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
 // NEED TO TEST
@@ -62,7 +67,7 @@ router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
 });
 
-// NEED TO TEST
+// COMPLETED
 
 router.delete('/:id', async (req, res) => {
   // delete on tag by its `id` value
