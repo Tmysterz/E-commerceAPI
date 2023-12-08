@@ -4,7 +4,6 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // TODO: when ever i do search all products the tags field is empty. see hw readme to see what it is suppused to look like
-// TODO: HELP WITH UPDATE ROUTE
 
 // COMPLETED
 
@@ -14,7 +13,7 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Category and Tag data
   try {
     const productData = await Product.findAll({
-      include: [ { model: Category }, { model: Tag }],
+      include: [ { model: Category }, { model: Tag, through: ProductTag }],
     });
     res.status(200).json(productData);
   } catch (err) {
@@ -30,7 +29,7 @@ router.get('/:id', async (req, res) => {
   // be sure to include its associated Category and Tag data
   try {
     const productData = await Product.findByPk(req.params.id, { 
-      include: [ { model: Category }, { model: Tag} ],
+      include: [ { model: Category }, { model: Tag , through: ProductTag} ],
     });
 
     if (!productData) {
